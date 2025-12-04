@@ -12,8 +12,7 @@ public class LoanCreateRequestDTO {
   @NotNull(message = "Book ID cannot be null")
   private Long bookId;
 
-  @NotNull(message = "Due date cannot be null")
-  private LocalDateTime dueDate;
+  private LocalDateTime dueDate; // Optional: defaults to 14 days from borrow date
 
   public LoanCreateRequestDTO() {
   }

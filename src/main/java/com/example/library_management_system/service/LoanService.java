@@ -62,7 +62,12 @@ public class LoanService {
     Loan loan = new Loan();
     loan.setMember(member);
     loan.setBook(book);
-    loan.setDueDate(request.getDueDate());
+
+    // Set dueDate: use provided date or default to 14 days from now
+    LocalDateTime dueDate = request.getDueDate() != null
+            ? request.getDueDate()
+            : LocalDateTime.now().plusDays(14);
+    loan.setDueDate(dueDate);
 
     Loan savedLoan = loanRepository.save(loan);
     bookService.decrementCopies(request.getBookId());
