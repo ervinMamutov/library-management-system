@@ -43,4 +43,11 @@ public class LoanController {
     List<LoanResponseDTO> overdueLoans = loanService.getOverdueLoans();
     return ResponseEntity.ok(overdueLoans);
   }
+
+  @GetMapping("/active")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+  public ResponseEntity<List<LoanResponseDTO>> getActiveLoans() {
+    List<LoanResponseDTO> activeLoans = loanService.getActiveLoansList();
+    return ResponseEntity.ok(activeLoans);
+  }
 }

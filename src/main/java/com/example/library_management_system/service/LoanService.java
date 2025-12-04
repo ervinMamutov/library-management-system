@@ -110,4 +110,11 @@ public class LoanService {
             .map(loanMapper::toResponseDTO)
             .collect(Collectors.toList());
   }
+
+  public List<LoanResponseDTO> getActiveLoansList() {
+    return loanRepository.findByReturnDateIsNull()
+            .stream()
+            .map(loanMapper::toResponseDTO)
+            .collect(Collectors.toList());
+  }
 }
