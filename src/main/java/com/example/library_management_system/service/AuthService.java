@@ -34,7 +34,8 @@ public class AuthService {
 
     String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-    User user = new User(request.getUsername(), hashedPassword, Role.LIBRARIAN);
+    Role role = Role.valueOf(request.getRole().toUpperCase());
+    User user = new User(request.getUsername(), hashedPassword, role);
     userRepository.save(user);
 
     String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());

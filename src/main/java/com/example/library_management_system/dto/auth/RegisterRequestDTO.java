@@ -14,12 +14,16 @@ public class RegisterRequestDTO {
   @Size(min = 6, message = "Password must be at least 6 characters")
   private String password;
 
+  @NotBlank(message = "Role cannot be blank")
+  private String role;
+
   public RegisterRequestDTO() {
   }
 
-  public RegisterRequestDTO(String username, String password) {
+  public RegisterRequestDTO(String username, String password, String role) {
     this.username = username;
     this.password = password;
+    this.role = role;
   }
 
   public String getUsername() {
@@ -36,5 +40,13 @@ public class RegisterRequestDTO {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 }
