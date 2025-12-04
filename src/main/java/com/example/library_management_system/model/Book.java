@@ -3,11 +3,18 @@ package com.example.library_management_system.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "book")
+@EntityListeners(AuditingEntityListener.class)
 public class Book {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +48,20 @@ public class Book {
   @Column(nullable = false)
   private Integer copiesAvailable;
 
+  @CreatedDate
+  @Column(updatable = false)
+  private LocalDateTime createdAt;
+
+  @CreatedBy
+  @Column(updatable = false, length = 100)
+  private String createdBy;
+
+  @LastModifiedDate
+  private LocalDateTime updatedAt;
+
+  @LastModifiedBy
+  @Column(length = 100)
+  private String updatedBy;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -122,6 +143,38 @@ public class Book {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public String getUpdatedBy() {
+    return updatedBy;
+  }
+
+  public void setUpdatedBy(String updatedBy) {
+    this.updatedBy = updatedBy;
   }
 
   @Override

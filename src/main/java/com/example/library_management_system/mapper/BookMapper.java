@@ -48,7 +48,11 @@ public class BookMapper {
             book.getIsbn(),
             book.getGenre(),
             book.getPublicationYear(),
-            book.getCopiesAvailable()
+            book.getCopiesAvailable(),
+            book.getCreatedAt(),
+            book.getCreatedBy(),
+            book.getUpdatedAt(),
+            book.getUpdatedBy()
     );
   }
 }
