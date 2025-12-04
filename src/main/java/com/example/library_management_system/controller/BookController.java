@@ -8,6 +8,7 @@ import com.example.library_management_system.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class BookController {
   }
 
   @PostMapping
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookCreateRequestDTO request) {
     BookResponseDTO created = bookService.createBook(request);
     return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -41,6 +43,7 @@ public class BookController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<BookResponseDTO> updateBook(@PathVariable Long id,
                                                       @Valid @RequestBody BookUpdateRequestDTO request) {
     BookResponseDTO updated = bookService.updateBook(id, request);
@@ -48,12 +51,14 @@ public class BookController {
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
     bookService.deleteBook(id);
     return ResponseEntity.noContent().build();
   }
 
   @PostMapping("/import")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<List<BookResponseDTO>> importBooks(@Valid @RequestBody List<BookImportDTO> books) {
     List<BookResponseDTO> imported = bookService.importBooks(books);
     return new ResponseEntity<>(imported, HttpStatus.CREATED);

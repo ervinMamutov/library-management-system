@@ -7,6 +7,7 @@ import com.example.library_management_system.service.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ public class LoanController {
   }
 
   @PostMapping
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<LoanResponseDTO> borrowBook(@Valid @RequestBody LoanCreateRequestDTO request) {
     LoanResponseDTO loan = loanService.borrowBook(request);
     return new ResponseEntity<>(loan, HttpStatus.CREATED);
   }
 
   @PatchMapping("/{id}/return")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<LoanResponseDTO> returnBook(@PathVariable Long id,
                                                       @RequestBody(required = false) LoanReturnRequestDTO request) {
     LoanResponseDTO returned = loanService.returnBook(id, request);
@@ -35,6 +38,7 @@ public class LoanController {
   }
 
   @GetMapping("/overdue")
+  @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
   public ResponseEntity<List<LoanResponseDTO>> getOverdueLoans() {
     List<LoanResponseDTO> overdueLoans = loanService.getOverdueLoans();
     return ResponseEntity.ok(overdueLoans);
