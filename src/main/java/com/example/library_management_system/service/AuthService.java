@@ -36,7 +36,24 @@ public class AuthService {
 
     String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-    User user = new User(request.getUsername(), hashedPassword, Role.MEMBER);
+    // Determine role: ADMIN can create any role, others default to MEMBER
+    Role role = Role.MEMBER;
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+      boolean isAdmin = auth.getAuthorities().stream()
+              .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+      if (isAdmin && request.getRole() != null && !request.getRole().isBlank()) {
+        try {
+          role = Role.valueOf(request.getRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+          throw new IllegalArgumentException("Invalid role: " + request.getRole());
+        }
+      }
+    }
+
+    User user = new User(request.getUsername(), hashedPassword, role);
     userRepository.save(user);
 
     String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
