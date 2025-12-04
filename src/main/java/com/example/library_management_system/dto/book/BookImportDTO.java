@@ -22,6 +22,11 @@ public class BookImportDTO {
           message = "Genre must be between 3 and 100 characters")
   private String genre;
 
+  @NotNull(message = "Publication year cannot be null")
+  @Min(value = 1000, message = "Publication year must be at least 1000")
+  @Max(value = 2100, message = "Publication year cannot be later than 2100")
+  private Integer publicationYear;
+
   @NotNull(message = "Copies cannot be null")
   @Min(value = 0, message = "Copies cannot be negative")
   private Integer copies;
@@ -29,11 +34,12 @@ public class BookImportDTO {
   public BookImportDTO() {
   }
 
-  public BookImportDTO(String title, String author, String isbn, String genre, Integer copies) {
+  public BookImportDTO(String title, String author, String isbn, String genre, Integer publicationYear, Integer copies) {
     this.title = title;
     this.author = author;
     this.isbn = isbn;
     this.genre = genre;
+    this.publicationYear = publicationYear;
     this.copies = copies;
   }
 
@@ -67,6 +73,14 @@ public class BookImportDTO {
 
   public void setGenre(String genre) {
     this.genre = genre;
+  }
+
+  public Integer getPublicationYear() {
+    return publicationYear;
+  }
+
+  public void setPublicationYear(Integer publicationYear) {
+    this.publicationYear = publicationYear;
   }
 
   public Integer getCopies() {
