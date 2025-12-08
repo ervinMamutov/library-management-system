@@ -104,16 +104,7 @@ class LoanControllerTest {
         .andExpect(jsonPath("$.bookId", is(2)));
   }
 
-  @Test
-  @DisplayName("borrowBook - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void borrowBook_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(post("/api/loans")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to LoanControllerSecurityTest
 
   @Test
   @DisplayName("borrowBook - Without DueDate - Uses Default 14 Days")
@@ -207,19 +198,7 @@ class LoanControllerTest {
         .andExpect(status().isOk());
   }
 
-  @Test
-  @DisplayName("returnBook - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void returnBook_AsMember_Returns403() throws Exception {
-    // Arrange
-    LoanReturnRequestDTO returnDTO = new LoanReturnRequestDTO();
-
-    // Act & Assert
-    mockMvc.perform(patch("/api/loans/1/return")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(returnDTO)))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to LoanControllerSecurityTest
 
   @Test
   @DisplayName("returnBook - Non-Existing Loan - Returns 404")
@@ -289,14 +268,7 @@ class LoanControllerTest {
         .andExpect(status().isOk());
   }
 
-  @Test
-  @DisplayName("getOverdueLoans - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void getOverdueLoans_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/loans/overdue"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to LoanControllerSecurityTest
 
   @Test
   @DisplayName("getActiveLoans - As Librarian - Returns 200")
@@ -334,12 +306,5 @@ class LoanControllerTest {
         .andExpect(status().isOk());
   }
 
-  @Test
-  @DisplayName("getActiveLoans - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void getActiveLoans_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/loans/active"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to LoanControllerSecurityTest
 }

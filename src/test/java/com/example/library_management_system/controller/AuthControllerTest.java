@@ -92,8 +92,8 @@ class AuthControllerTest {
   }
 
   @Test
-  @DisplayName("register - Duplicate Username - Returns 400")
-  void register_DuplicateUsername_Returns400() throws Exception {
+  @DisplayName("register - Duplicate Username - Returns 409")
+  void register_DuplicateUsername_Returns409() throws Exception {
     // Arrange
     when(authService.register(any(RegisterRequestDTO.class)))
         .thenThrow(new DuplicateResourceException("Username already exists: testuser"));
@@ -102,7 +102,7 @@ class AuthControllerTest {
     mockMvc.perform(post("/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(registerRequestDTO)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isConflict());
   }
 
   @Test

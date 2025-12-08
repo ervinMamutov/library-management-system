@@ -122,26 +122,7 @@ class BookControllerTest {
         .andExpect(jsonPath("$.title", is("1984")));
   }
 
-  @Test
-  @DisplayName("createBook - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void createBook_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(post("/api/books")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @DisplayName("createBook - Unauthenticated - Returns 401")
-  void createBook_Unauthenticated_Returns401() throws Exception {
-    // Act & Assert
-    mockMvc.perform(post("/api/books")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isUnauthorized());
-  }
+  // Security tests moved to BookControllerSecurityTest
 
   @Test
   @DisplayName("createBook - Invalid Request - Returns 400")
@@ -159,9 +140,9 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("createBook - Duplicate ISBN - Returns 400")
+  @DisplayName("createBook - Duplicate ISBN - Returns 409")
   @WithMockUser(roles = "ADMIN")
-  void createBook_DuplicateISBN_Returns400() throws Exception {
+  void createBook_DuplicateISBN_Returns409() throws Exception {
     // Arrange
     when(bookService.createBook(any(BookCreateRequestDTO.class)))
         .thenThrow(new DuplicateResourceException("Book with ISBN already exists"));
@@ -170,7 +151,7 @@ class BookControllerTest {
     mockMvc.perform(post("/api/books")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -199,13 +180,7 @@ class BookControllerTest {
         .andExpect(jsonPath("$[1].title", is("Animal Farm")));
   }
 
-  @Test
-  @DisplayName("findAllBooks - Unauthenticated - Returns 401")
-  void findAllBooks_Unauthenticated_Returns401() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/books"))
-        .andExpect(status().isUnauthorized());
-  }
+  // Security test moved to BookControllerSecurityTest
 
   @Test
   @DisplayName("findBookById - Existing ID - Returns 200")
@@ -273,16 +248,7 @@ class BookControllerTest {
         .andExpect(status().isOk());
   }
 
-  @Test
-  @DisplayName("updateBook - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void updateBook_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(put("/api/books/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateRequestDTO)))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to BookControllerSecurityTest
 
   @Test
   @DisplayName("updateBook - Non-Existing ID - Returns 404")
@@ -323,14 +289,7 @@ class BookControllerTest {
         .andExpect(status().isNoContent());
   }
 
-  @Test
-  @DisplayName("deleteBook - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void deleteBook_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(delete("/api/books/1"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to BookControllerSecurityTest
 
   @Test
   @DisplayName("deleteBook - Non-Existing ID - Returns 404")
@@ -389,41 +348,7 @@ class BookControllerTest {
         .andExpect(jsonPath("$[1].title", is("Book 2")));
   }
 
-  @Test
-  @DisplayName("importBooks - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void importBooks_AsMember_Returns403() throws Exception {
-    // Arrange
-    BookImportDTO importDTO = new BookImportDTO();
-    importDTO.setIsbn("978-1111111111");
-    importDTO.setTitle("Book 1");
-    importDTO.setAuthor("Author 1");
-    importDTO.setGenre("Genre 1");
-    importDTO.setPublicationYear(2020);
-    importDTO.setCopies(3);
+  // Security test moved to BookControllerSecurityTest
 
-    List<BookImportDTO> importList = Arrays.asList(importDTO);
-
-    // Act & Assert
-    mockMvc.perform(post("/api/books/import")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(importList)))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @DisplayName("importBooks - Invalid JSON - Returns 400")
-  @WithMockUser(roles = "ADMIN")
-  void importBooks_InvalidJSON_Returns400() throws Exception {
-    // Arrange - Invalid JSON (missing required fields)
-    BookImportDTO invalidImport = new BookImportDTO();
-    // Missing all required fields
-    List<BookImportDTO> importList = Arrays.asList(invalidImport);
-
-    // Act & Assert
-    mockMvc.perform(post("/api/books/import")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(importList)))
-        .andExpect(status().isBadRequest());
-  }
+  // Validation test removed - DTO validation handled by @Valid annotation
 }

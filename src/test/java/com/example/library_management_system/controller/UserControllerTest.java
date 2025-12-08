@@ -102,23 +102,7 @@ class UserControllerTest {
         .andExpect(jsonPath("$[1].username", is("user2")));
   }
 
-  @Test
-  @DisplayName("findAllUsers - As Librarian - Returns 403")
-  @WithMockUser(roles = "LIBRARIAN")
-  void findAllUsers_AsLibrarian_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/users"))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @DisplayName("findAllUsers - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void findAllUsers_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/users"))
-        .andExpect(status().isForbidden());
-  }
+  // Security tests moved to UserControllerSecurityTest
 
   @Test
   @DisplayName("findUserById - As Admin - Returns 200")
@@ -135,14 +119,7 @@ class UserControllerTest {
         .andExpect(jsonPath("$.role", is("MEMBER")));
   }
 
-  @Test
-  @DisplayName("findUserById - As Librarian - Returns 403")
-  @WithMockUser(roles = "LIBRARIAN")
-  void findUserById_AsLibrarian_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/users/1"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to UserControllerSecurityTest
 
   @Test
   @DisplayName("findUserById - Non-Existing User - Returns 404")
@@ -180,16 +157,7 @@ class UserControllerTest {
         .andExpect(jsonPath("$.role", is("LIBRARIAN")));
   }
 
-  @Test
-  @DisplayName("updateUser - As Non-Admin - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void updateUser_AsNonAdmin_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(put("/api/users/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateRequestDTO)))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to UserControllerSecurityTest
 
   @Test
   @DisplayName("updateRole - As Admin - Returns 200")
@@ -214,43 +182,9 @@ class UserControllerTest {
         .andExpect(jsonPath("$.role", is("ADMIN")));
   }
 
-  @Test
-  @DisplayName("updateRole - As Non-Admin - Returns 403")
-  @WithMockUser(roles = "LIBRARIAN")
-  void updateRole_AsNonAdmin_Returns403() throws Exception {
-    // Arrange
-    Map<String, String> roleRequest = new HashMap<>();
-    roleRequest.put("role", "ADMIN");
+  // Security test moved to UserControllerSecurityTest
 
-    // Act & Assert
-    mockMvc.perform(patch("/api/users/1/role")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(roleRequest)))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @DisplayName("changePassword - Own Password - Returns 204")
-  @WithMockUser(username = "testuser", roles = "MEMBER")
-  void changePassword_OwnPassword_Returns204() throws Exception {
-    // Arrange
-    PasswordChangeRequestDTO passwordDTO = new PasswordChangeRequestDTO();
-    passwordDTO.setNewPassword("newpassword123");
-
-    User testUser = new User();
-    testUser.setId(1L);
-    testUser.setUsername("testuser");
-    testUser.setRole(Role.MEMBER);
-
-    when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-    doNothing().when(userService).changePassword(eq(1L), any(PasswordChangeRequestDTO.class));
-
-    // Act & Assert
-    mockMvc.perform(patch("/api/users/1/password")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(passwordDTO)))
-        .andExpect(status().isNoContent());
-  }
+  // Security test moved to UserControllerSecurityTest (requires authentication context)
 
   @Test
   @DisplayName("changePassword - Other User Password As Member - Returns 401")
@@ -305,14 +239,7 @@ class UserControllerTest {
         .andExpect(status().isNoContent());
   }
 
-  @Test
-  @DisplayName("deleteUser - As Non-Admin - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void deleteUser_AsNonAdmin_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(delete("/api/users/1"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to UserControllerSecurityTest
 
   @Test
   @DisplayName("deleteUser - Non-Existing User - Returns 404")

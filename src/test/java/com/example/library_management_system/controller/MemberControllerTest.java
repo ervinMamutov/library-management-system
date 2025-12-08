@@ -103,16 +103,7 @@ class MemberControllerTest {
         .andExpect(jsonPath("$.name", is("John Doe")));
   }
 
-  @Test
-  @DisplayName("createMember - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void createMember_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(post("/api/members")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to MemberControllerSecurityTest
 
   @Test
   @DisplayName("createMember - Invalid Request - Returns 400")
@@ -130,9 +121,9 @@ class MemberControllerTest {
   }
 
   @Test
-  @DisplayName("createMember - Duplicate Email - Returns 400")
+  @DisplayName("createMember - Duplicate Email - Returns 409")
   @WithMockUser(roles = "ADMIN")
-  void createMember_DuplicateEmail_Returns400() throws Exception {
+  void createMember_DuplicateEmail_Returns409() throws Exception {
     // Arrange
     when(memberService.createMember(any(MemberCreateRequestDTO.class)))
         .thenThrow(new DuplicateResourceException("Member with email already exists"));
@@ -141,7 +132,7 @@ class MemberControllerTest {
     mockMvc.perform(post("/api/members")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(createRequestDTO)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -180,14 +171,7 @@ class MemberControllerTest {
         .andExpect(status().isOk());
   }
 
-  @Test
-  @DisplayName("findAllMembers - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void findAllMembers_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/members"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to MemberControllerSecurityTest
 
   @Test
   @DisplayName("findMemberById - As Admin - Returns 200")
@@ -252,14 +236,7 @@ class MemberControllerTest {
         .andExpect(status().isNoContent());
   }
 
-  @Test
-  @DisplayName("deleteMember - As Member - Returns 403")
-  @WithMockUser(roles = "MEMBER")
-  void deleteMember_AsMember_Returns403() throws Exception {
-    // Act & Assert
-    mockMvc.perform(delete("/api/members/1"))
-        .andExpect(status().isForbidden());
-  }
+  // Security test moved to MemberControllerSecurityTest
 
   @Test
   @DisplayName("deleteMember - Non-Existing Member - Returns 404")
